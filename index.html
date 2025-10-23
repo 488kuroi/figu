@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Figurine • Touchpoint</title>
+  <meta name="description" content="Touchpoint figurine dark mode: griglia, slider in modale, download selezione, pagine storia e ringraziamenti. Mobile-first, pronto per Cloudflare Pages." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Manrope','ui-sans-serif','system-ui'],
+            display: ['Playfair Display','Georgia','serif'],
+          },
+          colors: { brand: {50:'#f6f8ff',100:'#e7edff',200:'#cddaff',300:'#a9bfff',400:'#7c9bff',500:'#567dff',600:'#3f63e6',700:'#324ec0',800:'#2a4299',900:'#223876'} }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <style>
+    body { background-color: #000; color: #fff; }
+    .check-overlay{position:absolute;inset:0;background:rgba(255,255,255,.04);opacity:0;transition:opacity .15s}
+    .card.selected .check-overlay{opacity:1;background:rgba(17,24,39,.72)}
+    .sidebar-enter{transform:translateX(-100%)}
+    .sidebar-open{transform:translateX(0)}
+    .slides-shell{position:relative;width:100%;height:100%;display:flex;justify-content:center;padding-inline:1.25rem}
+    @media (min-width:768px){
+      .slides-shell{padding-inline:2.5rem}
+    }
+    @media (min-width:1024px){
+      .slides-shell{padding-inline:3rem}
+    }
+    .slides-shell .swiper{width:100%;height:100%;margin-inline:auto}
+    .swiper-button-prev,
+    .swiper-button-next{color:#f5f5f5}
+    /* .swiper-button-prev{left:0.75rem}
+    .swiper-button-next{right:0.75rem} */
+    .swiper-pagination-bullet{background:#71717a}
+    .swiper-pagination-bullet-active{background:#f4f4f5}
+    .swiper[data-mode="static"] .swiper-wrapper{display:flex;height:100%;align-items:center;justify-content:center}
+    .swiper[data-mode="static"] .swiper-wrapper>*{width:auto;height:auto}
+    .slide-viewport{position:relative;display:flex;align-items:center;justify-content:center;width:min(90vw,16rem);max-height:90vh;margin:0 auto;background:#000;border-radius:1.5rem;overflow:hidden;aspect-ratio:3/4}
+    @media (min-width:768px){
+      .slide-viewport{padding:3.5rem 2.5rem;width:18rem}
+    }
+    @media (min-width:1024px){
+      .slide-viewport{width:20rem}
+    }
+    @media (min-width:992px){
+      .slide-viewport{padding:3rem 2.25rem;}
+    }
+  </style>
+</head>
+<body class="dark bg-black text-white font-sans">
+  <!-- Header minimal dark -->
+  <header class="sticky top-0 z-40 bg-black/90 backdrop-blur border-b border-slate-700">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
+      <button id="btnOpenSidebar" class="p-2 rounded-xl border border-slate-700 hover:bg-gray-800 transition" aria-label="Apri menu">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      <h1 id="pageTitle" class="text-lg font-extrabold tracking-tight">Figurine</h1>
+    </div>
+  </header>
+
+  <!-- Sidebar dark -->
+  <div id="sidebar" class="fixed inset-y-0 left-0 w-80 max-w-[85vw] bg-black border-r border-slate-700 shadow-xl z-50 sidebar-enter transition-transform text-white">
+    <div class="h-full flex flex-col">
+      <div class="p-4 flex items-center gap-2 border-b border-slate-700">
+        <div class="h-9 w-9 rounded-2xl bg-gray-700 text-white font-extrabold grid place-items-center">F</div>
+        <p class="text-sm font-bold leading-tight">Navigazione</p>
+        <button id="btnCloseSidebar" class="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-700 text-white transition hover:bg-gray-800" aria-label="Chiudi menu">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12M6 18 18 6" />
+          </svg>
+        </button>
+      </div>
+
+      <nav class="p-4 space-y-3 overflow-y-auto">
+        <a href="#figurine" class="block px-3 py-2 rounded-xl hover:bg-gray-800 text-sm transition">Figurine</a>
+        <a href="#storia" class="block px-3 py-2 rounded-xl hover:bg-gray-800 text-sm transition">Storia</a>
+        <a href="#ringraziamenti" class="block px-3 py-2 rounded-xl hover:bg-gray-800 text-sm transition">Ringraziamenti</a>
+      </nav>
+    </div>
+  </div>
+  <div id="sidebarMask" class="fixed inset-0 bg-black/60 z-40 hidden"></div>
+
+  <!-- MAIN -->
+  <main class="max-w-6xl mx-auto px-4 py-6">
+    <!-- Figurine -->
+    <section id="page-figurine" class="page relative">
+      <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+      <button id="btnEnterSelect" type="button" class="fixed bottom-10 right-10 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full border border-white bg-black text-white shadow-lg transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white/40" aria-label="Scarica figurine selezionate">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v10m0 0 4-4m-4 4-4-4M6 18h12" />
+        </svg>
+      </button>
+    </section>
+
+    <!-- Storia -->
+    <section id="page-storia" class="page hidden">
+      <article class="prose prose-invert max-w-none">
+        <h2 class="font-display text-3xl">Storia</h2>
+        <p>Questa collezione nasce come omaggio al nostro evento. Ogni figurina è pensata per essere condivisa e conservata come ricordo.</p>
+      </article>
+    </section>
+
+    <!-- Ringraziamenti -->
+    <section id="page-ringraziamenti" class="page hidden">
+      <article class="prose prose-invert max-w-none">
+        <h2 class="font-display text-3xl">Ringraziamenti</h2>
+        <p>Un grazie speciale a tutti i partecipanti, agli organizzatori e agli amici che hanno contribuito a rendere questa raccolta possibile.</p>
+      </article>
+    </section>
+  </main>
+
+  <button id="btnConfirmDownload" type="button" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-40 hidden px-6 py-3 rounded-full border border-white bg-black text-white text-sm font-semibold tracking-wide shadow-xl transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white/40" aria-hidden="true">
+    Scarica
+  </button>
+
+  <!-- MODAL SLIDER -->
+  <div id="modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/80" id="modalMask"></div>
+    <div class="absolute inset-y-6 inset-x-4 md:inset-y-10 md:inset-x-[12vw] lg:inset-x-[18vw] max-w-5xl mx-auto rounded-2xl overflow-hidden shadow-2xl border border-slate-700 bg-black flex flex-col">
+      <div class="flex-1 min-h-0 slides-shell">
+        <div class="swiper w-full h-full overflow-hidden">
+          <div class="swiper-wrapper" id="sliderWrapper"></div>
+          <div class="swiper-pagination"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const $grid = document.getElementById('grid');
+      const $pages = document.querySelectorAll('.page');
+      const $pageTitle = document.getElementById('pageTitle');
+      const $sidebar = document.getElementById('sidebar');
+      const $sidebarMask = document.getElementById('sidebarMask');
+      const $btnOpenSidebar = document.getElementById('btnOpenSidebar');
+      const $btnCloseSidebar = document.getElementById('btnCloseSidebar');
+      const $modal = document.getElementById('modal');
+      const $modalMask = document.getElementById('modalMask');
+      const $sliderWrapper = document.getElementById('sliderWrapper');
+      const $btnEnterSelect = document.getElementById('btnEnterSelect');
+      const $btnConfirmDownload = document.getElementById('btnConfirmDownload');
+
+      const TEXT_ITEMS = [
+        { title: `Chi sono ’sti Match?`, description: `I nostri ospiti speciali per il pranzo del Ghermùl. Hanno mani buone, teste matte e idee hot | wild | tasty.` },
+        { title: `Tradizioni dure a morire.`, description: `Chi è cresciuto qui lo sa: le cose strane si mangiano… e spesso sono pure buone.` },
+        { title: `Fidati, non stiamo esagerando.`, description: `Il Ghermùl sarà una bomba. E no, bugia nen.` },
+        { title: `L’è ora!`, description: `Basta parole, si parte. Ci vediamo su, nel cuore di Cervelli.` },
+        { title: `Edizione 2025.`, description: `Lo mettiamo come un timbro: il Ghermùl è tornato, ed è più vivo che mai.` },
+        { title: `Il brindisi giusto.`, description: `Una bottiglia ogni 4 la offriamo noi. Le altre? Sceglile dalla “Carta delle Voglie”.` },
+        { title: `Detti saggi e mani sporche.`, description: `Qua si lavora e si mangia. La vanga? Butèla via dopo pranzo.` },
+        { title: `Si mangia!`, description: `Tutto pronto. Il fuoco è acceso, i piatti fumano. Chi arriva tardi…` },
+        { title: `Niente Sagrin.`, description: `Al Ghermùl c’è posto per la gioia, le castagne, il vino e la compagnia. Il resto, lasciatelo a casa.` },
+        { title: `Il nostro segno.`, description: `Un simbolo che parla di comunità, radici, montagna. Il nostro battito, insieme.` },
+        { title: `Bevilo e non pensarci`, description: `Quando il vino è buono, uno tira l’altro. E qui, il rischio è serio.` },
+        { title: `Match è fuoco`, description: `Una cucina diretta, senza fronzoli: bollente, selvaggia, saporita.` },
+        { title: `Non te la bevi`, description: `Se senti una balla grossa, ricordati della trota chiacchierona.` },
+        { title: `Stringi e vai`, description: `Detto secco per chi tergiversa: taglia corto e passa all’azione.` },
+        { title: `La vera merenda`, description: `Una tradizione piemontese che profuma di pane, vino e condivisione.` },
+        { title: `Cottura lenta, fame rapida`, description: `Il centro della scena? Un maiale allo spiedo che cuoce piano piano.` },
+        { title: `Commozione da cipolla`, description: `Quando il piatto è così buono che ti commuovi (o è solo la cipolla?).` },
+        { title: `Ghermoul style`, description: `Un logo che vibra tra tradizione e grafica nuova. Il G, l’inizio di tutto.` },
+        { title: `Fuori croccante, dentro tenera`, description: `Come una buona castagna, o come chi abita Cervelli: tostati ma dolci.` },
+        { title: `Il timbro di MATCH`, description: `Una firma inconfondibile: dove c’è fiamma, c’è gusto.` },
+        { title: `Oca logorroica`, description: `Una frase perfetta per chi non sta mai zitto, anche con il cappello della festa in testa. Ghermule è anche questo: risate, chiacchiere e un sacco di aneddoti da condividere.` },
+        { title: `Il saluto che conquista`, description: `Diretto, semplice, piemontese. Un “ciau bela” e già ci si sente a casa. Una cartolina di benvenuto dal cuore caldo di Cervelli.` },
+        { title: `Dammi il cinque`, description: `Un saluto vivace, con una pacca sulla spalla e una mano alzata. Perché ogni incontro al Ghermule è un piccolo brindisi alla vita di paese.` },
+        { title: `Alziamo i bicchieri`, description: `Nessuna festa è completa senza un brindisi. E al Ghermule ne faremo parecchi. Cin cin a chi arriva, resta e ritorna.` }
+      ];
+
+      // Reversed array
+      const TEXT_ITEMS_REVERSED = [...TEXT_ITEMS].reverse();
+
+      const CARDS = TEXT_ITEMS_REVERSED.map((item, index) => ({
+        id: `${index + 1}`,
+        title: item.title,
+        description: item.description,
+        url: `cards/${index + 1}.png`
+      }));
+      const ICON_DOWNLOAD = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v10m0 0 4-4m-4 4-4-4M6 18h12" />
+        </svg>
+      `;
+      const ICON_CLOSE = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12M6 18 18 6" />
+        </svg>
+      `;
+      const ICON_CHECK = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m5 12 4.5 4.5L19 7" />
+        </svg>
+      `;
+      const sliderBreakpoint = window.matchMedia('(min-width: 768px)');
+      const $swiper = document.querySelector('.swiper');
+      const $pagination = document.querySelector('.swiper-pagination');
+      const $navPrev = document.querySelector('.swiper-button-prev');
+      const $navNext = document.querySelector('.swiper-button-next');
+      let slider;
+      let activeIndex = 0;
+      let isSelecting = false;
+      const selectedIds = new Set();
+
+      function openSidebar() {
+        $sidebar.classList.add('sidebar-open');
+        $sidebarMask.classList.remove('hidden');
+      }
+
+      function handleCardInteraction(button, index) {
+        if (isSelecting) {
+          toggleCardSelection(button);
+          return;
+        }
+        openModal(index);
+      }
+
+      function toggleCardSelection(button) {
+        const id = button.dataset.id;
+        if (!id) return;
+        const isSelected = selectedIds.has(id);
+        if (isSelected) {
+          selectedIds.delete(id);
+          button.classList.remove('selected');
+          button.setAttribute('aria-pressed', 'false');
+        } else {
+          selectedIds.add(id);
+          button.classList.add('selected');
+          button.setAttribute('aria-pressed', 'true');
+        }
+        updateConfirmButton();
+      }
+
+      function clearSelections() {
+        selectedIds.clear();
+        $grid.querySelectorAll('.card.selected').forEach(card => {
+          card.classList.remove('selected');
+          card.setAttribute('aria-pressed', 'false');
+        });
+        updateConfirmButton();
+      }
+
+      function updateSelectButton() {
+        if (!$btnEnterSelect) return;
+        if (isSelecting) {
+          $btnEnterSelect.innerHTML = ICON_CLOSE;
+          $btnEnterSelect.setAttribute('aria-label', 'Annulla selezione figurine');
+          $btnEnterSelect.classList.add('ring-2', 'ring-white/40');
+          $btnEnterSelect.setAttribute('aria-pressed', 'true');
+        } else {
+          $btnEnterSelect.innerHTML = ICON_DOWNLOAD;
+          $btnEnterSelect.setAttribute('aria-label', 'Seleziona figurine da scaricare');
+          $btnEnterSelect.classList.remove('ring-2', 'ring-white/40');
+          $btnEnterSelect.setAttribute('aria-pressed', 'false');
+        }
+      }
+
+      function updateConfirmButton() {
+        if (!$btnConfirmDownload) return;
+        if (isSelecting) {
+          if (selectedIds.size > 0) {
+            const label = selectedIds.size === 1 ? 'Scarica 1 figurina' : `Scarica ${selectedIds.size} figurine`;
+            $btnConfirmDownload.textContent = label;
+            $btnConfirmDownload.disabled = false;
+          } else {
+            $btnConfirmDownload.textContent = 'Seleziona una o più figurine';
+            $btnConfirmDownload.disabled = true;
+          }
+          $btnConfirmDownload.classList.remove('hidden');
+          $btnConfirmDownload.style.display = 'inline-flex';
+          $btnConfirmDownload.setAttribute('aria-hidden', 'false');
+        } else {
+          $btnConfirmDownload.classList.add('hidden');
+          $btnConfirmDownload.style.display = 'none';
+          $btnConfirmDownload.textContent = 'Seleziona una o più figurine';
+          $btnConfirmDownload.setAttribute('aria-hidden', 'true');
+          $btnConfirmDownload.disabled = true;
+        }
+      }
+
+      function enterSelectMode() {
+        if (isSelecting) return;
+        isSelecting = true;
+        clearSelections();
+        updateSelectButton();
+      }
+
+      function exitSelectMode() {
+        if (!isSelecting) return;
+        isSelecting = false;
+        clearSelections();
+        updateSelectButton();
+      }
+
+      function toggleSelectMode() {
+        if (isSelecting) {
+          exitSelectMode();
+        } else {
+          enterSelectMode();
+        }
+      }
+
+      function slugify(text) {
+        return text
+          .toString()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-zA-Z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '')
+          .toLowerCase() || 'figurina';
+      }
+
+      async function downloadSelected() {
+        if (!selectedIds.size) return;
+        if (!$btnConfirmDownload) return;
+        if (typeof JSZip === 'undefined' || typeof saveAs === 'undefined') {
+          alert('Download non supportato nel browser corrente.');
+          return;
+        }
+        const ids = Array.from(selectedIds);
+        $btnConfirmDownload.textContent = 'Preparazione…';
+        $btnConfirmDownload.disabled = true;
+        try {
+          const zip = new JSZip();
+          const folder = zip.folder('figurine');
+          const downloads = ids.map(async id => {
+            const card = CARDS.find(item => item.id === id);
+            if (!card) return;
+            const blob = await getCardAsset(card).catch(err => {
+              console.error('Recupero asset fallito', card.url, err);
+              throw err;
+            });
+            const extension = card.url.split('.').pop() || 'png';
+            const fileName = `${slugify(card.title)}.${extension}`;
+            folder.file(fileName, blob);
+          });
+          await Promise.all(downloads);
+          const archive = await zip.generateAsync({ type: 'blob' });
+          saveAs(archive, `figurine-${Date.now()}.zip`);
+          exitSelectMode();
+        } catch (error) {
+          console.error('Errore durante il download', error);
+          alert('Impossibile scaricare le figurine selezionate. Riprova più tardi.');
+          updateConfirmButton();
+        } finally {
+          $btnConfirmDownload.disabled = false;
+          updateConfirmButton();
+        }
+      }
+
+      async function getCardAsset(card) {
+        try {
+          const response = await fetch(card.url, { cache: 'no-store' });
+          if (!response.ok) {
+            throw new Error(`Download fallito per ${card.url} (status ${response.status})`);
+          }
+          return await response.blob();
+        } catch (error) {
+          if (window.location.protocol === 'file:') {
+            return new Promise((resolve, reject) => {
+              try {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', card.url, true);
+                xhr.responseType = 'blob';
+                xhr.onload = () => {
+                  if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 300)) {
+                    resolve(xhr.response);
+                  } else {
+                    reject(new Error(`XHR status ${xhr.status}`));
+                  }
+                };
+                xhr.onerror = () => reject(new Error('XHR errore di rete'));
+                xhr.send();
+              } catch (xhrError) {
+                reject(xhrError);
+              }
+            });
+          }
+          throw error;
+        }
+      }
+
+      function closeSidebar() {
+        $sidebar.classList.remove('sidebar-open');
+        $sidebarMask.classList.add('hidden');
+      }
+
+      $btnOpenSidebar.addEventListener('click', openSidebar);
+      $btnCloseSidebar.addEventListener('click', closeSidebar);
+      $sidebarMask.addEventListener('click', closeSidebar);
+      if ($btnEnterSelect) {
+        $btnEnterSelect.addEventListener('click', toggleSelectMode);
+      }
+      if ($btnConfirmDownload) {
+        $btnConfirmDownload.addEventListener('click', downloadSelected);
+      }
+
+      function renderGrid() {
+        $grid.innerHTML = CARDS.map((card, index) => `
+          <button type="button" class="card group relative block w-full overflow-hidden rounded-xl border border-slate-700 bg-black/40 transition hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer" data-index="${index}" data-id="${card.id}" aria-pressed="false">
+            <img src="${card.url}" alt="${card.title}" class="w-full h-full object-cover transition duration-150 group-hover:opacity-80" loading="lazy">
+            <span class="check-overlay pointer-events-none grid place-items-center text-white/90">
+              ${ICON_CHECK}
+            </span>
+          </button>
+        `).join('');
+
+        $grid.querySelectorAll('[data-index]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const index = Number(btn.dataset.index);
+            handleCardInteraction(btn, Number.isNaN(index) ? 0 : index);
+          });
+        });
+      }
+
+      function createSlide(card, index, { staticMode = false } = {}) {
+        if (!card) return '';
+        const baseClasses = 'slide-viewport relative flex items-center justify-center';
+        const slideClasses = staticMode ? baseClasses : `swiper-slide ${baseClasses}`;
+        return `
+          <div class="${slideClasses}" data-slide-index="${index}">
+            <img src="${card.url}" alt="${card.title}" class="max-h-full w-auto max-w-full object-contain" loading="lazy">
+            <div class="absolute inset-x-0 top-0 bg-black/80">
+              <div class="flex items-center justify-between px-4 py-3">
+                <span class="slide-title text-sm font-semibold uppercase tracking-wide text-white">${card.title}</span>
+                <div class="flex items-center gap-2">
+                  <button type="button" class="share-btn inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-gray-900/70 text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white/40" data-index="${index}" aria-label="Condividi ${card.title}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8.59 13.51a4.5 4.5 0 0 1-.59-2.26V4.75A2.75 2.75 0 0 1 10.75 2h6.5A2.75 2.75 0 0 1 20 4.75v6.5A2.75 2.75 0 0 1 17.25 14h-4.5a4.5 4.5 0 0 1-2.26-.59l-4.3 4.3a2.75 2.75 0 1 1-3.89-3.89l4.3-4.3Z" />
+                    </svg>
+                  </button>
+                  <button type="button" class="close-btn inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-gray-900/70 text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white/40" aria-label="Chiudi modale">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12M6 18 18 6" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="absolute inset-x-0 bottom-0 bg-black/80 px-4 py-3 pb-9 text-xs leading-relaxed text-white">
+              ${card.description}
+            </div>
+          </div>
+        `;
+      }
+
+      function renderSliderSlides() {
+        $sliderWrapper.innerHTML = CARDS.map((card, index) => createSlide(card, index)).join('');
+        attachShareHandlers();
+      }
+
+      function renderStaticSlide(index) {
+        const card = CARDS[index];
+        if (!card) return;
+        $sliderWrapper.innerHTML = createSlide(card, index, { staticMode: true });
+        attachShareHandlers();
+      }
+
+      function attachShareHandlers() {
+        $sliderWrapper.querySelectorAll('.share-btn').forEach(btn => {
+          btn.addEventListener('click', event => {
+            event.stopPropagation();
+            const idx = Number(btn.dataset.index);
+            shareCard(Number.isNaN(idx) ? activeIndex : idx);
+          });
+        });
+        $sliderWrapper.querySelectorAll('.close-btn').forEach(btn => {
+          btn.addEventListener('click', event => {
+            event.stopPropagation();
+            closeModal();
+          });
+        });
+      }
+
+      async function shareCard(index) {
+        const card = CARDS[index];
+        if (!card) return;
+        const shareData = {
+          title: card.title,
+          text: card.description,
+          url: card.url
+        };
+        try {
+          if (navigator.share) {
+            await navigator.share(shareData);
+            return;
+          }
+        } catch (error) {
+          if (error && error.name === 'AbortError') {
+            return;
+          }
+        }
+        try {
+          await navigator.clipboard.writeText(card.url);
+          alert('Link dell\'immagine copiato negli appunti.');
+        } catch (clipboardError) {
+          console.warn('Condivisione non disponibile', clipboardError);
+        }
+      }
+
+      function setSliderMode(isSlider) {
+        if ($swiper) {
+          $swiper.dataset.mode = isSlider ? 'slider' : 'static';
+        }
+      }
+
+      function toggleNav(visible) {
+        [$pagination, $navPrev, $navNext].forEach(el => {
+          if (el) {
+            el.classList.toggle('hidden', !visible);
+          }
+        });
+      }
+
+      function initSlider() {
+        renderSliderSlides();
+        slider = new Swiper('.swiper', {
+          slidesPerView: 1,
+          allowTouchMove: true,
+          centeredSlides: false,
+          spaceBetween: 24,
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev'
+          },
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true
+          },
+          on: {
+            slideChange: () => {
+              activeIndex = slider.activeIndex;
+            }
+          }
+        });
+        setSliderMode(true);
+        toggleNav(true);
+      }
+
+      function destroySlider() {
+        if (slider) {
+          slider.destroy(true, true);
+          slider = null;
+        }
+      }
+
+      function prepareModalContent() {
+        if (sliderBreakpoint.matches) {
+          if (!slider) {
+            initSlider();
+          } else {
+            setSliderMode(true);
+            toggleNav(true);
+            slider.update();
+          }
+          slider.slideTo(activeIndex, 0);
+        } else {
+          if (slider) {
+            activeIndex = slider.activeIndex;
+            destroySlider();
+          }
+          setSliderMode(false);
+          renderStaticSlide(activeIndex);
+          toggleNav(false);
+        }
+      }
+
+      sliderBreakpoint.addEventListener('change', () => {
+        if ($modal.classList.contains('hidden')) {
+          if (!sliderBreakpoint.matches) {
+            destroySlider();
+            setSliderMode(false);
+          }
+          return;
+        }
+        prepareModalContent();
+      });
+
+      function openModal(index) {
+        activeIndex = index;
+        prepareModalContent();
+        $modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+      }
+
+      function closeModal() {
+        $modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+
+      $modalMask.addEventListener('click', closeModal);
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !$modal.classList.contains('hidden')) {
+          closeModal();
+        }
+      });
+
+      function showPage(id) {
+        $pages.forEach(p => p.classList.add('hidden'));
+        document.getElementById('page-' + id).classList.remove('hidden');
+        $pageTitle.textContent = id.charAt(0).toUpperCase() + id.slice(1);
+        const isFigurine = id === 'figurine';
+        if (!isFigurine) {
+          exitSelectMode();
+        }
+        if ($btnEnterSelect) {
+          $btnEnterSelect.classList.toggle('hidden', !isFigurine);
+        }
+        if (isFigurine) {
+          updateSelectButton();
+          updateConfirmButton();
+        } else if ($btnConfirmDownload) {
+          $btnConfirmDownload.classList.add('hidden');
+        }
+      }
+
+      window.addEventListener('hashchange', () => {
+        const h = location.hash.replace('#', '') || 'figurine';
+        showPage(h);
+        closeSidebar();
+      });
+
+      renderGrid();
+      showPage(location.hash.replace('#', '') || 'figurine');
+    });
+  </script>
+</body>
+</html>
