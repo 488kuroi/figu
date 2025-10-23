@@ -213,7 +213,8 @@
             notFound: `Figurina non trovata.`
           },
           share: {
-            copySuccess: `Testo della figurina copiato negli appunti.`
+            copySuccess: `Testo della figurina copiato negli appunti.`,
+            copyImageSuccess: `Figurina copiata negli appunti.`
           },
           story: [
             `Le figurine del Ghèrmul sono nate un po’ per gioco e un po’ per affetto.`,
@@ -285,7 +286,8 @@
             notFound: `Sticker not found.`
           },
           share: {
-            copySuccess: `Sticker text copied to clipboard.`
+            copySuccess: `Sticker text copied to clipboard.`,
+            copyImageSuccess: `Sticker copied to clipboard.`
           },
           story: [
             `Ghèrmul stickers were born partly for fun and partly out of affection.`,
@@ -357,7 +359,8 @@
             notFound: `Figurine introuvable.`
           },
           share: {
-            copySuccess: `Texte de la figurine copié dans le presse-papiers.`
+            copySuccess: `Texte de la figurine copié dans le presse-papiers.`,
+            copyImageSuccess: `Figurine copiée dans le presse-papiers.`
           },
           story: [
             `Les figurines du Ghèrmul sont nées un peu par jeu et un peu par affection.`,
@@ -947,7 +950,7 @@
         if (!card) return;
         const sharePayload = {
           title: card.title,
-          text: card.description
+          text: card.description ? `${card.title}\n${card.description}` : card.title
         };
         try {
           const blob = await getCardAsset(card);
@@ -962,10 +965,22 @@
           if (error && error.name === 'AbortError') {
             return;
           }
-          console.warn('File share unavailable, falling back to clipboard', error);
+          console.warn('File share unavailable, attempting clipboard', error);
         }
         try {
-          await navigator.clipboard.writeText(card.description ? `${card.title}\n${card.description}` : card.title);
+          if (navigator.clipboard && navigator.clipboard.write && window.ClipboardItem) {
+            const blob = await getCardAsset(card);
+            const clipboardItem = new ClipboardItem({ [blob.type || 'image/png']: blob });
+            await navigator.clipboard.write([clipboardItem]);
+            await navigator.clipboard.writeText(sharePayload.text);
+            alert(t('share.copyImageSuccess'));
+            return;
+          }
+        } catch (clipboardImageError) {
+          console.warn('Unable to copy image to clipboard', clipboardImageError);
+        }
+        try {
+          await navigator.clipboard.writeText(sharePayload.text);
           alert(t('share.copySuccess'));
         } catch (clipboardError) {
           console.warn('Condivisione non disponibile', clipboardError);
