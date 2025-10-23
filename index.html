@@ -915,7 +915,7 @@
       function attachShareHandlers() {
         $sliderWrapper.querySelectorAll('.share-btn').forEach(btn => {
           btn.addEventListener('click', event => {
-            event.stopPropagation();
+            // event.stopPropagation();
             const idx = Number(btn.dataset.index);
             shareCard(Number.isNaN(idx) ? activeIndex : idx);
           });
@@ -985,7 +985,7 @@
           console.warn('Unable to copy image to clipboard', clipboardImageError);
         }
         try {
-          await navigator.clipboard.writeText(`${sharePayload.text}\n\n${card.url}`);
+          await navigator.clipboard.writeText(`${sharePayload.text}\n\n${window.location.href}/cards/{card.url}`);
           alert(t('share.copySuccess'));
         } catch (clipboardError) {
           console.warn('Condivisione non disponibile', clipboardError);
