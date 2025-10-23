@@ -48,8 +48,7 @@
     .slides-shell .swiper{width:100%;height:100%;margin-inline:auto}
     .swiper-button-prev,
     .swiper-button-next{color:#f5f5f5}
-    /* .swiper-button-prev{left:0.75rem}
-    .swiper-button-next{right:0.75rem} */
+    
     .swiper-pagination-bullet{background:#71717a}
     .swiper-pagination-bullet-active{background:#f4f4f5}
     .swiper[data-mode="static"] .swiper-wrapper{display:flex;height:100%;align-items:center;justify-content:center}
@@ -64,6 +63,9 @@
     @media (min-width:992px){
       .slide-viewport{padding:3rem 2.25rem;}
     }
+    .btn-lang{display:inline-flex;align-items:center;justify-content:center;padding:0.25rem 0.5rem;color:#fff;background:transparent;transition:background .2s,color .2s;min-width:2.25rem;font-weight:600;letter-spacing:.02em}
+    .btn-lang.active{color:#fefefe50!important;}
+    .btn-lang:hover{background:rgba(255,255,255,.1)}
     @media (max-width:500px){
       #btnConfirmDownload {
         font-size: 0.6rem!important;
@@ -74,15 +76,15 @@
 <body class="dark bg-black text-white font-sans">
   <!-- Header minimal dark -->
   <header class="sticky top-0 z-40 bg-black/90 backdrop-blur border-b border-slate-700">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
+    <div class="mx-auto px-4 py-3 flex items-center gap-3">
       <button id="btnOpenSidebar" class="p-2 rounded-xl border border-slate-700 hover:bg-gray-800 transition" aria-label="Apri menu">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
       <h1 id="pageTitle" class="text-lg font-extrabold tracking-tight">Figurine</h1>
-      <a href="#figurine" class="ml-auto inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 p-2 transition hover:bg-white/10" aria-label="Logo Ghermùl">
-        <img src="icons/ghermul.png" alt="Ghermùl" class="h-8 w-8 object-contain">
+      <a href="#stickers" class="ml-auto inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 p-2 transition hover:bg-white/10" aria-label="Logo Ghermùl">
+        <img src="icons/ghermul_w.png" alt="Ghermùl" class="h-8 w-8 object-contain">
       </a>
     </div>
   </header>
@@ -90,10 +92,15 @@
   <!-- Sidebar dark -->
   <div id="sidebar" class="fixed inset-y-0 left-0 w-80 max-w-[85vw] bg-black border-r border-slate-700 shadow-xl z-50 sidebar-enter transition-transform text-white">
     <div class="h-full flex flex-col">
-      <div class="p-4 flex items-center gap-2 border-b border-slate-700">
-        <div class="h-9 w-9 rounded-2xl bg-gray-700 text-white font-extrabold grid place-items-center">F</div>
-        <p class="text-sm font-bold leading-tight">Navigazione</p>
-        <button id="btnCloseSidebar" class="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-700 text-white transition hover:bg-gray-800" aria-label="Chiudi menu">
+      <div class="p-4 flex items-center gap-4 border-b border-slate-700 justify-between">
+        <div class="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-white">
+          <button type="button" class="btn-lang" data-lang="en">EN</button>
+          <span>|</span>
+          <button type="button" class="btn-lang" data-lang="it">IT</button>
+          <span>|</span>
+          <button type="button" class="btn-lang" data-lang="fr">FR</button>
+        </div>
+        <button id="btnCloseSidebar" class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-700 text-white transition hover:bg-gray-800" aria-label="Chiudi menu">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12M6 18 18 6" />
           </svg>
@@ -101,19 +108,19 @@
       </div>
 
       <nav class="p-4 space-y-3 overflow-y-auto">
-        <a href="#figurine" class="block px-3 py-2 rounded-xl hover:bg-gray-800 text-sm transition">Figurine</a>
-        <a href="#storia" class="block px-3 py-2 rounded-xl hover:bg-gray-800 text-sm transition">Storia</a>
-        <a href="#ringraziamenti" class="block px-3 py-2 rounded-xl hover:bg-gray-800 text-sm transition">Ringraziamenti</a>
+        <a href="#stickers" class="block px-3 py-2 rounded-xl hover:bg-gray-800 text-sm transition" data-i18n="nav.stickers">Figurine</a>
+        <a href="#story" class="block px-3 py-2 rounded-xl hover:bg-gray-800 text-sm transition" data-i18n="nav.story">Storia</a>
+        <a href="#thanks" class="block px-3 py-2 rounded-xl hover:bg-gray-800 text-sm transition" data-i18n="nav.thanks">Ringraziamenti</a>
       </nav>
-      <div class="mt-auto p-4 border-t border-slate-700 lg:hidden">
+      <div class="mt-auto p-4 border-t border-slate-700">
         <div class="flex justify-end gap-4">
           <a href="https://www.instagram.com/match_hotwildtasty?igsh=MWJvcGNtZTJ2M3Fnag==" target="_blank" rel="noopener" class="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 p-3 transition hover:bg-white/10">
             <span class="sr-only">Match</span>
-            <img src="icons/match.png" alt="Match" class="h-9 w-9 object-contain">
+            <img src="icons/match_w.png" alt="Match" class="h-9 w-9 object-contain">
           </a>
           <a href="https://www.instagram.com/amicideicervelli?igsh=cnQyYTgxb3Q3NXdw" target="_blank" rel="noopener" class="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 p-3 transition hover:bg-white/10">
             <span class="sr-only">Amici dei Cervelli</span>
-            <img src="icons/amici_dei_cervelli.png" alt="Amici dei Cervelli" class="h-9 w-9 object-contain">
+            <img src="icons/amici_dei_cervelli_w.png" alt="Amici dei Cervelli" class="h-9 w-9 object-contain">
           </a>
         </div>
       </div>
@@ -122,9 +129,9 @@
   <div id="sidebarMask" class="fixed inset-0 bg-black/60 z-40 hidden"></div>
 
   <!-- MAIN -->
-  <main class="max-w-6xl mx-auto px-4 py-6">
+  <main class="mx-auto px-12 py-6">
     <!-- Figurine -->
-    <section id="page-figurine" class="page relative">
+    <section id="page-stickers" class="page relative">
       <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
       <button id="btnEnterSelect" type="button" class="fixed bottom-10 right-10 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full border border-white bg-black text-white shadow-lg transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white/40" aria-label="Scarica figurine selezionate">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -134,36 +141,13 @@
     </section>
 
     <!-- Storia -->
-    <section id="page-storia" class="page hidden">
-      <article class="prose prose-invert max-w-none">
-        <!-- <h2 class="font-display text-3xl mb-6">Storia</h2> -->
-        <p class="mt-4">Le figurine del Ghèrmul sono nate un po’ per gioco e un po’ per affetto.
-          <br />
-          Abbiamo pensato a tutte quelle frasi che ci fanno ridere ogni volta, ai modi di dire che ci portiamo dietro da sempre e ci siamo detti: perché non usarle per animare davvero il pranzo?
-          <br />
-          Scambiarsi le figurine è un modo per chiacchierare, per rompere il ghiaccio con chi si ha accanto, per tornare un po’ bambini.
-          È un gioco semplice che ci ricorda quanto sia bello condividere, ridere, dire una cavolata in dialetto e attaccare un ricordo su una bottiglia, sulla cover del telefono o sul frigo di casa.
-          <br />
-          Insomma, un piccolo gesto per rendere questo pranzo ancora più nostro.</p>
-          <br />
-          <p>Fate girare, fate a cambio e buona raccolta ✨</p>
-      </article>
+    <section id="page-story" class="page hidden">
+      <article class="prose prose-invert max-w-none" id="storyContent"></article>
     </section>
 
     <!-- Ringraziamenti -->
-    <section id="page-ringraziamenti" class="page hidden">
-      <article class="prose prose-invert max-w-none">
-        <!-- <h2 class="font-display text-3xl mb-6">Ringraziamenti</h2> -->
-        <p class="mt-4">Grazie a chi ha scelto di esserci oggi, di sedersi a tavola e condividere questa giornata con noi.</p>
-          <p>A chi è venuto da vicino e chi da lontano, con gli amici o in famiglia. A chi è tornato dopo anni e a chi ha scoperto Cervelli per la prima volta.</p>
-          <br />
-          <p>Grazie di cuore ai ragazzi di Match che hanno portato la loro energia, le mani in pasta e un pranzo da ricordare.</p>
-          <p>Grazie a Silvia che ha trasformato tutte le nostre idee in immagini bellissime, dando un volto a questo evento.</p>
-          <br />
-          <p>E grazie a tutti voi che con una parola, una risata, un brindisi o una figurina avete reso questa giornata davvero speciale.</p>
-          <br />
-          <p>Ci si rivede alla prossima sempre qui, a Cervelli.</p>
-      </article>
+    <section id="page-thanks" class="page hidden">
+      <article class="prose prose-invert max-w-none" id="thanksContent"></article>
     </section>
   </main>
 
@@ -201,42 +185,228 @@
       const $btnEnterSelect = document.getElementById('btnEnterSelect');
       const $btnConfirmDownload = document.getElementById('btnConfirmDownload');
 
-      const TEXT_ITEMS = [
-        { title: `Chi sono ’sti Match?`, description: `I nostri ospiti speciali per il pranzo del Ghermùl. Hanno mani buone, teste matte e idee hot | wild | tasty.` },
-        { title: `Tradizioni dure a morire.`, description: `Chi è cresciuto qui lo sa: le cose strane si mangiano… e spesso sono pure buone.` },
-        { title: `Fidati, non stiamo esagerando.`, description: `Il Ghermùl sarà una bomba. E no, bugia nen.` },
-        { title: `L’è ora!`, description: `Basta parole, si parte. Ci vediamo su, nel cuore di Cervelli.` },
-        { title: `Edizione 2025.`, description: `Lo mettiamo come un timbro: il Ghermùl è tornato, ed è più vivo che mai.` },
-        { title: `Il brindisi giusto.`, description: `Una bottiglia ogni 4 la offriamo noi. Le altre? Sceglile dalla “Carta delle Voglie”.` },
-        { title: `Detti saggi e mani sporche.`, description: `Qua si lavora e si mangia. La vanga? Butèla via dopo pranzo.` },
-        { title: `Si mangia!`, description: `Tutto pronto. Il fuoco è acceso, i piatti fumano. Chi arriva tardi…` },
-        { title: `Niente Sagrin.`, description: `Al Ghermùl c’è posto per la gioia, le castagne, il vino e la compagnia. Il resto, lasciatelo a casa.` },
-        { title: `Il nostro segno.`, description: `Un simbolo che parla di comunità, radici, montagna. Il nostro battito, insieme.` },
-        { title: `Bevilo e non pensarci`, description: `Quando il vino è buono, uno tira l’altro. E qui, il rischio è serio.` },
-        { title: `Match è fuoco`, description: `Una cucina diretta, senza fronzoli: bollente, selvaggia, saporita.` },
-        { title: `Non te la bevi`, description: `Se senti una balla grossa, ricordati della trota chiacchierona.` },
-        { title: `Stringi e vai`, description: `Detto secco per chi tergiversa: taglia corto e passa all’azione.` },
-        { title: `La vera merenda`, description: `Una tradizione piemontese che profuma di pane, vino e condivisione.` },
-        { title: `Cottura lenta, fame rapida`, description: `Il centro della scena? Un maiale allo spiedo che cuoce piano piano.` },
-        { title: `Commozione da cipolla`, description: `Quando il piatto è così buono che ti commuovi (o è solo la cipolla?).` },
-        { title: `Ghermoul style`, description: `Un logo che vibra tra tradizione e grafica nuova. Il G, l’inizio di tutto.` },
-        { title: `Fuori croccante, dentro tenera`, description: `Come una buona castagna, o come chi abita Cervelli: tostati ma dolci.` },
-        { title: `Il timbro di MATCH`, description: `Una firma inconfondibile: dove c’è fiamma, c’è gusto.` },
-        { title: `Oca logorroica`, description: `Una frase perfetta per chi non sta mai zitto, anche con il cappello della festa in testa. Ghermùl è anche questo: risate, chiacchiere e un sacco di aneddoti da condividere.` },
-        { title: `Il saluto che conquista`, description: `Diretto, semplice, piemontese. Un “ciau bela” e già ci si sente a casa. Una cartolina di benvenuto dal cuore caldo di Cervelli.` },
-        { title: `Dammi il cinque`, description: `Un saluto vivace, con una pacca sulla spalla e una mano alzata. Perché ogni incontro al Ghermùl è un piccolo brindisi alla vita di paese.` },
-        { title: `Alziamo i bicchieri`, description: `Nessuna festa è completa senza un brindisi. E al Ghermùl ne faremo parecchi. Cin cin a chi arriva, resta e ritorna.` }
-      ];
-
-      // Reversed array
-      const TEXT_ITEMS_REVERSED = [...TEXT_ITEMS].reverse();
-
-      const CARDS = TEXT_ITEMS_REVERSED.map((item, index) => ({
-        id: `${index + 1}`,
-        title: item.title,
-        description: item.description,
-        url: `cards/${index + 1}.png`
-      }));
+      const LOCALE_DATA = {
+        it: {
+          label: `Italiano`,
+          header: { title: `Figurine` },
+          nav: { stickers: `Figurine`, story: `Storia`, thanks: `Ringraziamenti` },
+          sidebar: { title: `Navigazione` },
+          pages: { stickers: `Figurine`, story: `Storia`, thanks: `Ringraziamenti` },
+          buttons: {
+            openSidebar: `Apri menu`,
+            closeSidebar: `Chiudi menu`,
+            enterSelect: `Seleziona figurine da scaricare`,
+            cancelSelect: `Annulla selezione figurine`,
+            downloadHint: `Seleziona una o più figurine`,
+            downloadSingle: `Scarica 1 figurina`,
+            downloadMultiple: `Scarica {count} figurine`,
+            preparing: `Preparazione…`,
+            download: `Scarica`,
+            share: `Condividi {title}`,
+            closeModal: `Chiudi modale`,
+            language: `Lingua`
+          },
+          messages: {
+            downloadUnsupported: `Download non supportato nel browser corrente.`,
+            multiUnsupported: `Download multiplo non supportato nel browser corrente.`,
+            downloadError: `Impossibile scaricare le figurine selezionate. Riprova più tardi.`,
+            notFound: `Figurina non trovata.`
+          },
+          share: {
+            copySuccess: `Testo della figurina copiato negli appunti.`
+          },
+          story: [
+            `Le figurine del Ghèrmul sono nate un po’ per gioco e un po’ per affetto.`,
+            `Abbiamo pensato a tutte quelle frasi che ci fanno ridere ogni volta, ai modi di dire che ci portiamo dietro da sempre e ci siamo detti: perché non usarle per animare davvero il pranzo?`,
+            `Scambiarsi le figurine è un modo per chiacchierare, per rompere il ghiaccio con chi si ha accanto, per tornare un po’ bambini.`,
+            `È un gioco semplice che ci ricorda quanto sia bello condividere, ridere, dire una cavolata in dialetto e attaccare un ricordo su una bottiglia, sulla cover del telefono o sul frigo di casa.`,
+            `Insomma, un piccolo gesto per rendere questo pranzo ancora più nostro.`,
+            `Fate girare, fate a cambio e buona raccolta ✨`
+          ],
+          thanks: [
+            `Grazie a chi ha scelto di esserci oggi, di sedersi a tavola e condividere questa giornata con noi.`,
+            `A chi è venuto da vicino e chi da lontano, con gli amici o in famiglia. A chi è tornato dopo anni e a chi ha scoperto Cervelli per la prima volta.`,
+            `Grazie di cuore ai ragazzi di Match che hanno portato la loro energia, le mani in pasta e un pranzo da ricordare.`,
+            `Grazie a Silvia che ha trasformato tutte le nostre idee in immagini bellissime, dando un volto a questo evento.`,
+            `E grazie a tutti voi che con una parola, una risata, un brindisi o una figurina avete reso questa giornata davvero speciale.`,
+            `Ci si rivede alla prossima sempre qui, a Cervelli.`
+          ],
+          cards: [
+            { title: `Chi sono ’sti Match?`, description: `I nostri ospiti speciali per il pranzo del Ghèrmùl. Hanno mani buone, teste matte e idee hot | wild | tasty.` },
+            { title: `Tradizioni dure a morire.`, description: `Chi è cresciuto qui lo sa: le cose strane si mangiano… e spesso sono pure buone.` },
+            { title: `Fidati, non stiamo esagerando.`, description: `Il Ghèrmùl sarà una bomba. E no, bugia nen.` },
+            { title: `L’è ora!`, description: `Basta parole, si parte. Ci vediamo su, nel cuore di Cervelli.` },
+            { title: `Edizione 2025.`, description: `Lo mettiamo come un timbro: il Ghèrmùl è tornato, ed è più vivo che mai.` },
+            { title: `Il brindisi giusto.`, description: `Una bottiglia ogni 4 la offriamo noi. Le altre? Sceglile dalla “Carta delle Voglie”.` },
+            { title: `Detti saggi e mani sporche.`, description: `Qua si lavora e si mangia. La vanga? Butèla via dopo pranzo.` },
+            { title: `Si mangia!`, description: `Tutto pronto. Il fuoco è acceso, i piatti fumano. Chi arriva tardi…` },
+            { title: `Niente Sagrin.`, description: `Al Ghèrmùl c’è posto per la gioia, le castagne, il vino e la compagnia. Il resto, lasciatelo a casa.` },
+            { title: `Il nostro segno.`, description: `Un simbolo che parla di comunità, radici, montagna. Il nostro battito, insieme.` },
+            { title: `Bevilo e non pensarci`, description: `Quando il vino è buono, uno tira l’altro. E qui, il rischio è serio.` },
+            { title: `Match è fuoco`, description: `Una cucina diretta, senza fronzoli: bollente, selvaggia, saporita.` },
+            { title: `Non te la bevi`, description: `Se senti una balla grossa, ricordati della trota chiacchierona.` },
+            { title: `Stringi e vai`, description: `Detto secco per chi tergiversa: taglia corto e passa all’azione.` },
+            { title: `La vera merenda`, description: `Una tradizione piemontese che profuma di pane, vino e condivisione.` },
+            { title: `Cottura lenta, fame rapida`, description: `Il centro della scena? Un maiale allo spiedo che cuoce piano piano.` },
+            { title: `Commozione da cipolla`, description: `Quando il piatto è così buono che ti commuovi (o è solo la cipolla?).` },
+            { title: `Ghermoul style`, description: `Un logo che vibra tra tradizione e grafica nuova. Il G, l’inizio di tutto.` },
+            { title: `Fuori croccante, dentro tenera`, description: `Come una buona castagna, o come chi abita Cervelli: tostati ma dolci.` },
+            { title: `Il timbro di MATCH`, description: `Una firma inconfondibile: dove c’è fiamma, c’è gusto.` },
+            { title: `Oca logorroica`, description: `Una frase perfetta per chi non sta mai zitto, anche con il cappello della festa in testa. Ghermùl è anche questo: risate, chiacchiere e un sacco di aneddoti da condividere.` },
+            { title: `Il saluto che conquista`, description: `Diretto, semplice, piemontese. Un “ciau bela” e già ci si sente a casa. Una cartolina di benvenuto dal cuore caldo di Cervelli.` },
+            { title: `Dammi il cinque`, description: `Un saluto vivace, con una pacca sulla spalla e una mano alzata. Perché ogni incontro al Ghèrmùl è un piccolo brindisi alla vita di paese.` },
+            { title: `Alziamo i bicchieri`, description: `Nessuna festa è completa senza un brindisi. E al Ghèrmùl ne faremo parecchi. Cin cin a chi arriva, resta e ritorna.` }
+          ]
+        },
+        en: {
+          label: `English`,
+          header: { title: `Stickers` },
+          nav: { stickers: `Stickers`, story: `Story`, thanks: `Thanks` },
+          sidebar: { title: `Navigation` },
+          pages: { stickers: `Stickers`, story: `Story`, thanks: `Thanks` },
+          buttons: {
+            openSidebar: `Open menu`,
+            closeSidebar: `Close menu`,
+            enterSelect: `Select stickers to download`,
+            cancelSelect: `Cancel sticker selection`,
+            downloadHint: `Select one or more stickers`,
+            downloadSingle: `Download 1 sticker`,
+            downloadMultiple: `Download {count} stickers`,
+            preparing: `Preparing…`,
+            download: `Download`,
+            share: `Share {title}`,
+            closeModal: `Close modal`,
+            language: `Language`
+          },
+          messages: {
+            downloadUnsupported: `Download not supported in this browser.`,
+            multiUnsupported: `Multiple download is not supported in this browser.`,
+            downloadError: `Unable to download the selected stickers. Please try again later.`,
+            notFound: `Sticker not found.`
+          },
+          share: {
+            copySuccess: `Sticker text copied to clipboard.`
+          },
+          story: [
+            `Ghèrmul stickers were born partly for fun and partly out of affection.`,
+            `We gathered every phrase that makes us laugh, the expressions we grew up with, and thought: why not use them to bring the lunch to life?`,
+            `Swapping stickers helps you talk, break the ice with whoever is next to you, and feel like kids again.`,
+            `It’s a simple game that reminds us how good it feels to share, to laugh, to drop a dialect joke and stick a memory on a bottle, a phone case, or the fridge at home.`,
+            `In short, a small gesture that makes this lunch even more ours.`,
+            `Pass them around, trade them, and enjoy the collection ✨`
+          ],
+          thanks: [
+            `Thank you to everyone who chose to be here today, to sit at the table and share this day with us.`,
+            `To those who came from nearby and those from far away, with friends or with family. To those who returned after years and those discovering Cervelli for the first time.`,
+            `A heartfelt thanks to the Match crew for bringing their energy, their hands in the dough, and a lunch to remember.`,
+            `Thank you to Silvia, who turned all our ideas into beautiful images and gave this event a face.`,
+            `And thank you to all of you who, with a word, a laugh, a toast, or a sticker, made this day truly special.`,
+            `See you next time, right here in Cervelli.`
+          ],
+          cards: [
+            { title: `Who are these Match folks?`, description: `Our special guests for the Ghèrmul lunch. Skilled hands, restless minds, ideas that are hot | wild | tasty.` },
+            { title: `Old habits die hard.`, description: `If you grew up here, you know: the strange dishes are the ones you eat… and they’re usually the best.` },
+            { title: `Trust us, we’re not exaggerating.`, description: `Ghèrmul is going to be explosive. And no, we’re not kidding.` },
+            { title: `It’s time!`, description: `Enough talking—let’s go. See you up here, in the heart of Cervelli.` },
+            { title: `2025 Edition.`, description: `Stamp it like a seal: Ghèrmul is back and more alive than ever.` },
+            { title: `The perfect toast.`, description: `One bottle out of four is on us. The others? Pick them from the “Carta delle Voglie”.` },
+            { title: `Wise words, dirty hands.`, description: `Here we work and we eat. The shovel? Toss it aside after lunch.` },
+            { title: `Lunch is served!`, description: `Everything’s ready. The fire is lit, the plates are steaming. Don’t be late…` },
+            { title: `No bad vibes.`, description: `Ghèrmul is about joy, chestnuts, wine, and company. Leave the rest at home.` },
+            { title: `Our mark.`, description: `A symbol that speaks of community, roots, and mountains. Our shared heartbeat.` },
+            { title: `Drink it, don’t overthink.`, description: `When the wine is good, one glass leads to another. And here, that risk is very real.` },
+            { title: `Match is fire.`, description: `A straight-to-the-point kitchen: blazing hot, wild, and full of flavour.` },
+            { title: `You won’t fool us.`, description: `If you hear a tall tale, remember the chatty trout.` },
+            { title: `Make it quick.`, description: `A sharp saying for anyone who hesitates: cut it short and move.` },
+            { title: `The real snack.`, description: `A Piedmont tradition that smells of bread, wine, and sharing.` },
+            { title: `Slow cook, fast appetite.`, description: `Center stage? A spit-roasted pig that takes its sweet time.` },
+            { title: `Onion tears.`, description: `When the dish is so good it makes you cry (or maybe it’s just the onion).` },
+            { title: `Ghèrmul style`, description: `A logo that vibrates between tradition and fresh graphics. The G is where it all begins.` },
+            { title: `Crispy outside, tender inside.`, description: `Like a good chestnut—or like the people of Cervelli: tough but sweet.` },
+            { title: `MATCH’s stamp.`, description: `An unmistakable signature: where there’s flame, there’s flavour.` },
+            { title: `Chatty goose.`, description: `The perfect line for someone who never stops talking, even with a party hat on. Ghèrmul is laughter and stories to share.` },
+            { title: `A greeting that wins hearts.`, description: `Direct, simple, Piedmontese. A “ciau bela” and you already feel at home.` },
+            { title: `Give me five.`, description: `A lively hello with a pat on the shoulder and a raised hand. Every meeting at Ghèrmul is a toast to village life.` },
+            { title: `Raise your glasses.`, description: `No celebration is complete without a toast. At Ghèrmul we’ll have plenty. Cheers to those who arrive, stay, and return.` }
+          ]
+        },
+        fr: {
+          label: `Français`,
+          header: { title: `Figurines` },
+          nav: { stickers: `Figurines`, story: `Histoire`, thanks: `Remerciements` },
+          sidebar: { title: `Navigation` },
+          pages: { stickers: `Figurines`, story: `Histoire`, thanks: `Remerciements` },
+          buttons: {
+            openSidebar: `Ouvrir le menu`,
+            closeSidebar: `Fermer le menu`,
+            enterSelect: `Sélectionner des figurines à télécharger`,
+            cancelSelect: `Annuler la sélection de figurines`,
+            downloadHint: `Sélectionnez une ou plusieurs figurines`,
+            downloadSingle: `Télécharger 1 figurine`,
+            downloadMultiple: `Télécharger {count} figurines`,
+            preparing: `Préparation…`,
+            download: `Télécharger`,
+            share: `Partager {title}`,
+            closeModal: `Fermer la fenêtre`,
+            language: `Langue`
+          },
+          messages: {
+            downloadUnsupported: `Téléchargement non pris en charge par ce navigateur.`,
+            multiUnsupported: `Le téléchargement multiple n’est pas pris en charge par ce navigateur.`,
+            downloadError: `Impossible de télécharger les figurines sélectionnées. Réessayez plus tard.`,
+            notFound: `Figurine introuvable.`
+          },
+          share: {
+            copySuccess: `Texte de la figurine copié dans le presse-papiers.`
+          },
+          story: [
+            `Les figurines du Ghèrmul sont nées un peu par jeu et un peu par affection.`,
+            `Nous avons rassemblé toutes ces phrases qui nous font rire à chaque fois, les expressions que nous gardons depuis toujours, et nous nous sommes dit : pourquoi ne pas les utiliser pour animer vraiment le déjeuner ?`,
+            `Échanger les figurines, c’est discuter, briser la glace avec son voisin et redevenir un peu enfants.`,
+            `C’est un jeu simple qui nous rappelle combien il est beau de partager, de rire, de lancer une blague en dialecte et de coller un souvenir sur une bouteille, une coque de téléphone ou le frigo de la maison.`,
+            `Bref, un petit geste qui rend ce déjeuner encore plus à nous.`,
+            `Faites tourner, échangez et bonne collection ✨`
+          ],
+          thanks: [
+            `Merci à ceux qui ont choisi d’être là aujourd’hui, de s’asseoir à table et de partager cette journée avec nous.`,
+            `À ceux qui viennent de près comme de loin, entre amis ou en famille. À ceux qui reviennent après des années et à ceux qui découvrent Cervelli pour la première fois.`,
+            `Merci de tout cœur à l’équipe de Match qui a apporté son énergie, les mains dans la pâte et un déjeuner mémorable.`,
+            `Merci à Silvia qui a transformé toutes nos idées en superbes images, donnant un visage à cet événement.`,
+            `Et merci à vous tous qui, avec un mot, un rire, un toast ou une figurine, avez rendu cette journée vraiment spéciale.`,
+            `On se revoit très vite, toujours ici à Cervelli.`
+          ],
+          cards: [
+            { title: `C’est qui ces Match ?`, description: `Nos invités spéciaux pour le déjeuner du Ghèrmul. Des mains habiles, des têtes folles et des idées hot | wild | tasty.` },
+            { title: `Les habitudes ont la vie dure.`, description: `Quand on a grandi ici, on sait que les plats bizarres sont ceux qu’on mange… et souvent les meilleurs.` },
+            { title: `Fais-nous confiance, on n’exagère pas.`, description: `Le Ghèrmul va être une bombe. Et non, ce n’est pas une blague.` },
+            { title: `C’est l’heure !`, description: `Assez parlé, on y va. Rendez-vous là-haut, au cœur de Cervelli.` },
+            { title: `Édition 2025.`, description: `On le marque comme un sceau : le Ghèrmul est de retour, plus vivant que jamais.` },
+            { title: `Le toast parfait.`, description: `Une bouteille sur quatre est pour nous. Les autres ? Choisis-les dans la “Carta delle Voglie”.` },
+            { title: `Proverbes sages, mains sales.`, description: `Ici on travaille et on mange. La pelle ? On la pose après le repas.` },
+            { title: `À table !`, description: `Tout est prêt. Le feu est allumé, les assiettes fument. Mieux vaut arriver à l’heure…` },
+            { title: `Pas de mauvais esprit.`, description: `Au Ghèrmul, il y a de la place pour la joie, les châtaignes, le vin et la compagnie. Le reste reste à la maison.` },
+            { title: `Notre signe.`, description: `Un symbole qui parle de communauté, de racines et de montagne. Notre battement commun.` },
+            { title: `Bois-le sans réfléchir.`, description: `Quand le vin est bon, un verre en appelle un autre. Et ici, le risque est réel.` },
+            { title: `Match, c’est le feu.`, description: `Une cuisine directe, sans fioritures : brûlante, sauvage et pleine de goût.` },
+            { title: `On ne te croit pas.`, description: `Si tu entends une énorme histoire, pense à la truite bavarde.` },
+            { title: `Serre et avance.`, description: `Un mot sec pour ceux qui tergiversent : coupe court et passe à l’action.` },
+            { title: `Le vrai goûter.`, description: `Une tradition piémontaise qui sent le pain, le vin et le partage.` },
+            { title: `Cuisson lente, faim rapide.`, description: `Au centre de la scène ? Un cochon à la broche qui cuit tout doucement.` },
+            { title: `Émotion à l’oignon.`, description: `Quand le plat est si bon qu’il te fait pleurer (ou bien est-ce juste l’oignon ?).` },
+            { title: `Style Ghèrmul`, description: `Un logo qui oscille entre tradition et graphisme tout neuf. Le G, début de tout.` },
+            { title: `Croquant dehors, tendre dedans.`, description: `Comme une bonne châtaigne, ou comme les gens de Cervelli : coriaces mais doux.` },
+            { title: `Le sceau de MATCH.`, description: `Une signature inimitable : là où il y a de la flamme, il y a du goût.` },
+            { title: `Oie bavarde.`, description: `La phrase parfaite pour celui qui ne se tait jamais, même avec le chapeau de fête. Ghèrmul, c’est aussi ça : rires et anecdotes.` },
+            { title: `Le salut qui séduit.`, description: `Direct, simple, piémontais. Un “ciau bela” et on se sent déjà chez soi.` },
+            { title: `Donne-moi cinq.`, description: `Un salut dynamique, main sur l’épaule et main levée. Chaque rencontre au Ghèrmul est un petit toast à la vie du village.` },
+            { title: `Levons nos verres.`, description: `Aucune fête n’est complète sans un toast. Au Ghèrmul nous en ferons plein. Santé à ceux qui arrivent, restent et reviennent.` }
+          ]
+        }
+      };
+      const DEFAULT_LANG = 'it';
+      let currentLang = DEFAULT_LANG;
+      let cards = [];
+      let currentPage = 'figurine';
       const ICON_DOWNLOAD = `
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v10m0 0 4-4m-4 4-4-4M6 18h12" />
@@ -254,6 +424,28 @@
       `;
       const PLACEHOLDER_ICON = 'icons/fiamma.png';
       const BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+
+      function getLocale() {
+        return LOCALE_DATA[currentLang] || LOCALE_DATA[DEFAULT_LANG];
+      }
+
+      function formatString(template, params = {}) {
+        return template.replace(/\{(\w+)\}/g, (_, key) => (params[key] ?? `{${key}}`));
+      }
+
+      function t(path) {
+        const segments = path.split('.');
+        let value = getLocale();
+        for (const segment of segments) {
+          if (value && Object.prototype.hasOwnProperty.call(value, segment)) {
+            value = value[segment];
+          } else {
+            return '';
+          }
+        }
+        return value;
+      }
+
       const sliderBreakpoint = window.matchMedia('(min-width: 768px)');
       const $swiper = document.querySelector('.swiper');
       const $pagination = document.querySelector('.swiper-pagination');
@@ -333,6 +525,101 @@
         loadLazyImage(img);
       }
 
+      function renderStory() {
+        const container = document.getElementById('storyContent');
+        if (!container) return;
+        const paragraphs = t('story') || [];
+        container.innerHTML = Array.isArray(paragraphs)
+          ? paragraphs.map((text, idx) => `<p class="${idx === 0 ? 'mt-4' : 'mt-3'}">${text}</p>`).join('')
+          : '';
+      }
+
+      function renderThanks() {
+        const container = document.getElementById('thanksContent');
+        if (!container) return;
+        const paragraphs = t('thanks') || [];
+        container.innerHTML = Array.isArray(paragraphs)
+          ? paragraphs.map((text, idx) => `<p class="${idx === 0 ? 'mt-4' : 'mt-3'}">${text}</p>`).join('')
+          : '';
+      }
+
+      function updateNavText() {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.dataset.i18n;
+          const value = key ? t(key) : '';
+          if (value) el.textContent = value;
+        });
+      }
+
+      function updateHeaderTitle() {
+        
+        const locale = getLocale();
+
+        console.log('locale', locale);
+
+        if (!$pageTitle) return;
+        setTimeout(() => {
+          const map = locale.nav || {};
+          const title = map[currentPage] || locale.header.title;
+          $pageTitle.textContent = title;
+          document.title = `${title} • Touchpoint`;
+        }, 100);
+      }
+
+      function applyButtonLabels() {
+        if ($btnOpenSidebar) $btnOpenSidebar.setAttribute('aria-label', t('buttons.openSidebar'));
+        if ($btnCloseSidebar) $btnCloseSidebar.setAttribute('aria-label', t('buttons.closeSidebar'));
+        if ($btnEnterSelect) {
+          const key = isSelecting ? 'buttons.cancelSelect' : 'buttons.enterSelect';
+          $btnEnterSelect.setAttribute('aria-label', t(key));
+        }
+        if ($btnConfirmDownload) $btnConfirmDownload.setAttribute('aria-label', t('buttons.download'));
+        document.querySelectorAll('.btn-lang').forEach(btn => {
+          const lang = btn.dataset.lang;
+          if (!lang) return;
+          const label = LOCALE_DATA[lang]?.label || lang.toUpperCase();
+          btn.textContent = label.split(' ')[0].slice(0,2).toUpperCase();
+          btn.classList.toggle('active', lang === currentLang);
+          btn.setAttribute('aria-label', label);
+          btn.setAttribute('title', label);
+        });
+      }
+
+      function setLanguage(lang) {
+        if (!LOCALE_DATA[lang]) lang = DEFAULT_LANG;
+        if (currentLang === lang && cards.length) {
+          updateHeaderTitle();
+          return;
+        }
+        const previousScroll = window.scrollY;
+        currentLang = lang;
+        try { localStorage.setItem('gfig-lang', lang); } catch (err) { /* ignore */ }
+        document.documentElement.setAttribute('lang', lang);
+        const locale = getLocale();
+        const localeCards = locale.cards || [];
+        cards = localeCards.slice().reverse().map((card, index) => ({
+          id: `${index + 1}`,
+          title: card.title,
+          description: card.description,
+          url: `cards/${index + 1}.png`
+        }));
+        exitSelectMode();
+      renderStory();
+      renderThanks();
+      updateNavText();
+      applyButtonLabels();
+      renderGrid();
+      updateSelectButton();
+      updateConfirmButton();
+      destroySlider();
+      activeIndex = 0;
+        if (!$modal.classList.contains('hidden')) {
+          closeModal();
+        }
+        updateHeaderTitle();
+        window.scrollTo(0, previousScroll);
+      }
+
       function toggleCardSelection(button) {
         const id = button.dataset.id;
         if (!id) return;
@@ -362,27 +649,28 @@
         if (!$btnEnterSelect) return;
         if (isSelecting) {
           $btnEnterSelect.innerHTML = ICON_CLOSE;
-          $btnEnterSelect.setAttribute('aria-label', 'Annulla selezione figurine');
           $btnEnterSelect.classList.add('ring-2', 'ring-white/40');
           $btnEnterSelect.setAttribute('aria-pressed', 'true');
         } else {
           $btnEnterSelect.innerHTML = ICON_DOWNLOAD;
-          $btnEnterSelect.setAttribute('aria-label', 'Seleziona figurine da scaricare');
           $btnEnterSelect.classList.remove('ring-2', 'ring-white/40');
-          
+
           $btnEnterSelect.setAttribute('aria-pressed', 'false');
         }
+        applyButtonLabels();
       }
 
       function updateConfirmButton() {
         if (!$btnConfirmDownload) return;
         if (isSelecting) {
           if (selectedIds.size > 0) {
-            const label = selectedIds.size === 1 ? 'Scarica 1 figurina' : `Scarica ${selectedIds.size} figurine`;
+            const label = selectedIds.size === 1
+              ? t('buttons.downloadSingle')
+              : formatString(t('buttons.downloadMultiple'), { count: selectedIds.size });
             $btnConfirmDownload.textContent = label;
             $btnConfirmDownload.disabled = false;
           } else {
-            $btnConfirmDownload.textContent = 'Seleziona una o più figurine';
+            $btnConfirmDownload.textContent = t('buttons.downloadHint');
             $btnConfirmDownload.disabled = true;
           }
           $btnConfirmDownload.classList.remove('hidden');
@@ -391,7 +679,7 @@
         } else {
           $btnConfirmDownload.classList.add('hidden');
           $btnConfirmDownload.style.display = 'none';
-          $btnConfirmDownload.textContent = 'Seleziona una o più figurine';
+          $btnConfirmDownload.textContent = t('buttons.downloadHint');
           $btnConfirmDownload.setAttribute('aria-hidden', 'true');
           $btnConfirmDownload.disabled = true;
         }
@@ -433,28 +721,28 @@
         if (!selectedIds.size) return;
         if (!$btnConfirmDownload) return;
         const ids = Array.from(selectedIds);
-        $btnConfirmDownload.textContent = 'Preparazione…';
+        $btnConfirmDownload.textContent = t('buttons.preparing');
         $btnConfirmDownload.disabled = true;
         try {
           if (ids.length === 1) {
-            const single = CARDS.find(item => item.id === ids[0]);
-            if (!single) throw new Error('Figurina non trovata');
+            const single = cards.find(item => item.id === ids[0]);
+            if (!single) throw new Error(t('messages.notFound'));
             const blob = await getCardAsset(single);
             const extension = single.url.split('.').pop() || 'png';
             const fileName = `${slugify(single.title)}.${extension}`;
             saveBlob(blob, fileName);
           } else {
             if (typeof JSZip === 'undefined' || typeof saveAs === 'undefined') {
-              alert('Download multiplo non supportato nel browser corrente.');
+              alert(t('messages.multiUnsupported'));
               return;
             }
             const zip = new JSZip();
             const folder = zip.folder('figurine');
             const downloads = ids.map(async id => {
-              const card = CARDS.find(item => item.id === id);
+              const card = cards.find(item => item.id === id);
               if (!card) return;
               const blob = await getCardAsset(card).catch(err => {
-                console.error('Recupero asset fallito', card.url, err);
+                console.error('Asset fetch failed', card.url, err);
                 throw err;
               });
               const extension = card.url.split('.').pop() || 'png';
@@ -467,8 +755,12 @@
           }
           exitSelectMode();
         } catch (error) {
-          console.error('Errore durante il download', error);
-          alert('Impossibile scaricare le figurine selezionate. Riprova più tardi.');
+          console.error('Error while downloading stickers', error);
+          if (error && typeof error.message === 'string' && error.message === t('messages.notFound')) {
+            alert(error.message);
+          } else {
+            alert(t('messages.downloadError'));
+          }
           updateConfirmButton();
         } finally {
           $btnConfirmDownload.disabled = false;
@@ -537,10 +829,13 @@
       if ($btnConfirmDownload) {
         $btnConfirmDownload.addEventListener('click', downloadSelected);
       }
+      document.querySelectorAll('.btn-lang').forEach(btn => {
+        btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+      });
 
       function renderGrid() {
-        $grid.innerHTML = CARDS.map((card, index) => `
-          <button type="button" class="card group relative block w-full overflow-hidden rounded-xl border border-slate-700 bg-black/40 transition hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer" data-index="${index}" data-id="${card.id}" aria-pressed="false" data-lazy-container>
+        $grid.innerHTML = cards.map((card, index) => `
+          <button type="button" class="card group relative block w-full overflow-hidden rounded-xl border border-slate-700 bg-black/40 transition hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 cursor-pointer" data-index="${index}" data-id="${card.id}" aria-pressed="false" data-lazy-container aria-label="${card.title}">
             <div class="card-placeholder" aria-hidden="true">
               <img src="${PLACEHOLDER_ICON}" alt="" class="pointer-events-none select-none">
             </div>
@@ -577,7 +872,7 @@
               <div class="flex items-center justify-between px-4 py-3">
                 <span class="slide-title text-sm font-semibold uppercase tracking-wide text-white">${card.title}</span>
                 <div class="flex items-center gap-2">
-                  <button type="button" class="share-btn inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-gray-900/70 text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white/40" data-index="${index}" aria-label="Condividi ${card.title}">
+                  <button type="button" class="share-btn inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-gray-900/70 text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white/40" data-index="${index}" aria-label="${formatString(t('buttons.share'), { title: card.title })}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 50 50" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M15 30c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z" />
                       <path d="M35 20c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z" />
@@ -586,7 +881,7 @@
                       <path d="M30.993 15.885l.894 1.79-12.88 6.438-.894-1.79z" />
                     </svg>
                   </button>
-                  <button type="button" class="close-btn inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-gray-900/70 text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white/40" aria-label="Chiudi modale">
+                  <button type="button" class="close-btn inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-gray-900/70 text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white/40" aria-label="${t('buttons.closeModal')}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                       <path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12M6 18 18 6" />
                     </svg>
@@ -602,13 +897,13 @@
       }
 
       function renderSliderSlides() {
-        $sliderWrapper.innerHTML = CARDS.map((card, index) => createSlide(card, index)).join('');
+        $sliderWrapper.innerHTML = cards.map((card, index) => createSlide(card, index)).join('');
         attachShareHandlers();
         registerLazyImages($sliderWrapper);
       }
 
       function renderStaticSlide(index) {
-        const card = CARDS[index];
+        const card = cards[index];
         if (!card) return;
         $sliderWrapper.innerHTML = createSlide(card, index, { staticMode: true });
         attachShareHandlers();
@@ -648,7 +943,7 @@
       }
 
       async function shareCard(index) {
-        const card = CARDS[index];
+        const card = cards[index];
         if (!card) return;
         const sharePayload = {
           title: card.title,
@@ -667,11 +962,11 @@
           if (error && error.name === 'AbortError') {
             return;
           }
-          console.warn('Condivisione file non riuscita, fallback su link', error);
+          console.warn('File share unavailable, falling back to clipboard', error);
         }
         try {
           await navigator.clipboard.writeText(card.description ? `${card.title}\n${card.description}` : card.title);
-          alert('Testo della figurina copiato negli appunti.');
+          alert(t('share.copySuccess'));
         } catch (clipboardError) {
           console.warn('Condivisione non disponibile', clipboardError);
         }
@@ -780,9 +1075,12 @@
 
       function showPage(id) {
         $pages.forEach(p => p.classList.add('hidden'));
-        document.getElementById('page-' + id).classList.remove('hidden');
-        $pageTitle.textContent = id.charAt(0).toUpperCase() + id.slice(1);
-        const isFigurine = id === 'figurine';
+        const target = document.getElementById('page-' + id) || document.getElementById('page-stickers');
+        if (!target) return;
+        target.classList.remove('hidden');
+        currentPage = target.id.replace('page-', '') || 'stickers';
+        updateHeaderTitle();
+        const isFigurine = currentPage === 'stickers';
         if (!isFigurine) {
           exitSelectMode();
         }
@@ -803,8 +1101,14 @@
         closeSidebar();
       });
 
-      renderGrid();
-      showPage(location.hash.replace('#', '') || 'figurine');
+      const storedLang = (() => {
+        try { return localStorage.getItem('gfig-lang'); } catch (err) { return null; }
+      })();
+      const browserLang = (navigator.language || navigator.userLanguage || '').slice(0, 2).toLowerCase();
+      const initialLang = LOCALE_DATA[storedLang] ? storedLang : (LOCALE_DATA[browserLang] ? browserLang : DEFAULT_LANG);
+      setLanguage(initialLang);
+      const initialPage = location.hash.replace('#', '') || 'figurine';
+      showPage(initialPage);
     });
   </script>
 </body>
