@@ -967,7 +967,7 @@
         if (!card) return;
         const sharePayload = {
           title: card.title,
-          text: card.description ? `${card.title}\n${card.description}` : card.title
+          text: card.description ? `\n${card.description}` : ''
         };
         let imageBlob = null;
 
@@ -995,7 +995,7 @@
             await navigator.clipboard.write([clipboardItem]);
             copiedImage = true;
           }
-          await navigator.clipboard.writeText(`${sharePayload.text}\n${card.url}`);
+          await navigator.clipboard.writeText(`${sharePayload.text}\n\n${card.url}`);
           if (copiedImage) {
             alert(t('share.copyImageSuccess'));
             return;
